@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <title>UrlSharing-CompressionStream</title>
+    <meta name="description" content="UrlSharing-CompressionStream">
+    <meta name="author" content="YA">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <textarea id="source" placeholder="Input text to compress" rows="10" cols="50"></textarea>
+
+    <script type="module">
+        import {
+            compressToBase64,
+            compressToEncodedURIComponent,
+            compressToUTF16,
+            compressToUint8Array,
+            decompressFromBase64,
+            decompressFromEncodedURIComponent,
+            decompressFromUTF16,
+            decompressFromUint8Array,
+        } from "./compression.js";
+
+        document.addEventListener("DOMContentLoaded", _ => {
+            console.log("DOM fully loaded and parsed");
+
+            const source = document.getElementById('source');
+            source.addEventListener('change', async _ => {
+                console.log('changed');
+
+                const text = source.value;
+                const compressed = await compressToBase64(text);
+                console.log('Compressed:', compressed);
+
+                const decompressed = await decompressFromBase64(compressed);
+                console.log('Decompressed:', decompressed);
+            });
+        });
+    </script>
+</body>
+
+</html>
