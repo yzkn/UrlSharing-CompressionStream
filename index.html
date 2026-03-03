@@ -19,8 +19,13 @@
 
     <link rel="manifest" href="manifest.json" />
 
-    <title>Noteqry</title>
+    <script>
+        if (typeof navigator.serviceWorker !== 'undefined') {
+            navigator.serviceWorker.register('sw.js')
+        }
+    </script>
 
+    <title>Noteqry</title>
 </head>
 
 <body class="h-100 d-flex flex-column">
@@ -33,12 +38,6 @@
         crossorigin="anonymous"></script>
 
     <script src="js/app.js"></script>
-
-    <script>
-        if (typeof navigator.serviceWorker !== 'undefined') {
-            navigator.serviceWorker.register('sw.js')
-        }
-    </script>
 </body>
 
 </html><!-- Copyright (c) 2026 YA All rights reserved. -->
