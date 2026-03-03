@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&family=Source+Code+Pro&display=swap"
         rel="stylesheet">
 
-    <link href="app.css" rel="stylesheet">
+    <link href="style/app.css" rel="stylesheet">
 
     <title>Noteqry</title>
 
@@ -30,7 +30,13 @@
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
 
-    <script src="app.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        if (typeof navigator.serviceWorker !== 'undefined') {
+            navigator.serviceWorker.register('sw.js')
+        }
+    </script>
 </body>
 
 </html><!-- Copyright (c) 2026 YA All rights reserved. -->
