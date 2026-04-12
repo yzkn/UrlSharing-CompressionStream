@@ -19,6 +19,9 @@
 
     <link rel="manifest" href="manifest.json" />
 
+    <!-- QRコード生成ライブラリ (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
     <script>
         if (typeof navigator.serviceWorker !== 'undefined') {
             navigator.serviceWorker.register('js/sw.js')
@@ -32,6 +35,33 @@
 
     <textarea id="editor" class="form-control" wrap="soft"
         placeholder="ここにテキストを入力してください。入力されたテキストはURLのクエリパラメーターに保持されます。"></textarea>
+
+    <!-- QR表示用ボタン（右下などに配置） -->
+    <button id="qr-open-btn"
+        style="position: fixed; bottom: 20px; right: 20px; z-index: 100; padding: 6px; border-radius: 8px; border: 1px solid #ddd; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; transition: transform 0.2s;"
+        onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+        <canvas id="qr-button-canvas" style="display: block;"></canvas>
+    </button>
+
+    <!-- ポップアップ本体 -->
+    <div id="qr-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <!-- 余白を大きく取ったコンテンツエリア -->
+        <div
+            style="background: white; padding: 60px; border-radius: 24px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); position: relative; max-width: 90%;">
+            <button id="qr-close-btn"
+                style="position: absolute; top: 20px; right: 20px; border: none; background: #eee; width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; color: #666;">&times;</button>
+
+            <h3 style="margin: 0 0 30px 0; font-family: sans-serif; color: #333;">QRコードで共有</h3>
+
+            <!-- ポップアップ内の大きなQRコード -->
+            <canvas id="qr-modal-canvas"></canvas>
+
+            <div id="qr-url-display"
+                style="margin-top: 30px; font-size: 14px; color: #888; word-break: break-all; max-width: 300px; line-height: 1.4;">
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"

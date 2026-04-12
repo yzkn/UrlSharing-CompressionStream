@@ -1,13 +1,16 @@
 // Copyright (c) 2026 YA All rights reserved.
 
 
-const editor = document.getElementById('editor');
+let qrBtn;
 const QUERY_KEY = 't'; // クエリパラメータのキー (?t=...)
 
 
-const updateTitle = (text) => {
+const updateAppStatus = (text) => {
     const firstLine = text.split('\n')[0].trim();
     document.title = 'Noteqry' + (firstLine ? ` - ${firstLine}` : '');
+
+    // ボタンのQRコード更新
+    qrBtn.value = window.location.href;
 };
 
 /**
@@ -57,7 +60,7 @@ async function decompressFromEncodedURIComponent(encoded) {
  */
 let timer;
 async function updateURL() {
-    const text = editor.value;
+    const text = document.getElementById('editor').value;
     const compressed = await compressToEncodedURIComponent(text);
     const newURL = new URL(window.location.href);
 
@@ -73,20 +76,52 @@ async function updateURL() {
     updateTitle(text);
 }
 
-// 入力時にデバウンス処理（負荷軽減とAPI制限回避）
-editor.addEventListener('input', () => {
-    clearTimeout(timer);
-    timer = setTimeout(updateURL, 300); // 300ms間隔で更新
-});
-
 // 初期化: URLからテキストを読み込む
 window.addEventListener('DOMContentLoaded', async () => {
     const params = new URLSearchParams(window.location.search);
     const encodedText = params.get(QUERY_KEY);
-
+    const editor = document.getElementById('editor');
     if (encodedText) {
         const decodedText = await decompressFromEncodedURIComponent(encodedText);
         editor.value = decodedText;
     }
     editor.focus();
+
+    //
+
+    const modal = document.getElementById('qr-modal');
+
+    // QRコードのインスタンス作成（ボタン用）
+    qrBtn = new QRious({
+        element: document.getElementById('qr-button-canvas'),
+        size: 50, // ボタン内のサイズ
+        level: 'L'
+    });
+
+    // QRコードのインスタンス作成（ポップアップ用）
+    const qrModal = new QRious({
+        element: document.getElementById('qr-modal-canvas'),
+        size: 300, // ポップアップ内のサイズ
+        level: 'L'
+    });
+
+
+    // 入力時にデバウンス処理（負荷軽減とAPI制限回避）
+    document.getElementById('editor').addEventListener('input', () => {
+        clearTimeout(timer);
+        timer = setTimeout(updateURL, 300); // 300ms間隔で更新
+    });
+
+    // ポップアップを表示する処理
+    document.getElementById('qr-open-btn').addEventListener('click', () => {
+        const currentUrl = window.location.href;
+        qrModal.value = currentUrl; // ポップアップ用QRを最新URLに更新
+        document.getElementById('qr-url-display').textContent = currentUrl;
+        modal.style.display = 'flex';
+    });
+
+    // 閉じる処理
+    const closeModal = () => modal.style.display = 'none';
+    document.getElementById('qr-close-btn').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 });
