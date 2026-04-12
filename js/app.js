@@ -4,6 +4,12 @@
 const editor = document.getElementById('editor');
 const QUERY_KEY = 't'; // クエリパラメータのキー (?t=...)
 
+
+const updateTitle = (text) => {
+    const firstLine = text.split('\n')[0].trim();
+    document.title = 'Noteqry' + (firstLine ? ` - ${firstLine}` : '');
+};
+
 /**
  * 圧縮 & URLセーフBase64エンコード
  */
@@ -63,6 +69,8 @@ async function updateURL() {
 
     // ブラウザの履歴を増やさずにURLを書き換え
     window.history.replaceState(null, "", newURL.toString());
+
+    updateTitle(text);
 }
 
 // 入力時にデバウンス処理（負荷軽減とAPI制限回避）
