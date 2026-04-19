@@ -5,14 +5,6 @@ let qrBtn;
 const QUERY_KEY = 't'; // クエリパラメータのキー (?t=...)
 
 
-const updateAppStatus = (text) => {
-    const firstLine = text.split('\n')[0].trim();
-    document.title = 'Noteqry' + (firstLine ? ` - ${firstLine}` : '');
-
-    // ボタンのQRコード更新
-    qrBtn.value = window.location.href;
-};
-
 /**
  * 圧縮 & URLセーフBase64エンコード
  */
@@ -73,7 +65,12 @@ async function updateURL() {
     // ブラウザの履歴を増やさずにURLを書き換え
     window.history.replaceState(null, "", newURL.toString());
 
-    updateTitle(text);
+    // タイトルを更新（最初の行をタイトルにする）
+    const firstLine = text.split('\n')[0].trim();
+    document.title = 'Noteqry' + (firstLine ? ` - ${firstLine}` : '');
+
+    // ボタンのQRコード更新
+    qrBtn.value = window.location.href;
 }
 
 // 初期化: URLからテキストを読み込む
